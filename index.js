@@ -2,23 +2,30 @@ const API_URL = 'https://pokeapi.co';
 
 const xhr = new XMLHttpRequest();
 
-function onRequestHandler() {
-    if(this.readyState === 4 && this.status === 200){
+const HTMLResponse = document.querySelector("#app")
+const ul = document.createElement('ul');
+const i = 0;
 
+fetch(`${API_URL}/api/v2/pokemon`)
+    .then((response) => response.json() )
+    .then((pokemons) => {
+        
+        pokemons.results.forEach((pokemon, indice) => {
+            
+            const elem = document.createElement('p');
 
+            elem.setAttribute('id', indice+1);
+            elem.innerHTML = pokemon.name
 
-        const data = JSON.parse(this.response);
-        console.log(data.results);
-       
-        const HTMLResponse = document.querySelector('#app');
+            elem.addEventListener('click', function(){
+                window.location.href = `./detail.html?id=${indice+1}`
+            })
 
-        const template = data.results.map((pokemon) => `<li>${pokemon.name}</li>`);
-        HTMLResponse.innerHTML = `<ul>${template}</ul>`;
-    }
+            HTMLResponse.appendChild(elem);
+            
+        });
+        HTMLResponse.appendChild(ul);
+        
+    });
+ 
 
-}
-
-
-xhr.addEventListener("load", onRequestHandler);
-xhr.open("GET",  `${API_URL}/api/v2/pokemon`)
-xhr.send();
